@@ -16,7 +16,7 @@ class FuzzyValue:
         return FuzzyValue(max(self.value, other.value))
 
     def fuzzyNot(self):
-        return 1.0 - self.value
+        return FuzzyValue(1.0 - self.value)
 
 def grade_membership(value, low, high):
     """
