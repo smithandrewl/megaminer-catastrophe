@@ -155,11 +155,6 @@ class Tile(GameObject):
         """
         # <<-- Creer-Merge: is_pathable_builtin -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
 
-        """Checks if a Tile is pathable to units
-               Returns:
-                   bool: True if pathable, False otherwise
-               """
-        # <<-- Creer-Merge: is_pathable_builtin -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
 
         unoccupied = self.unit is None
         not_a_structure = (self.structure is None)

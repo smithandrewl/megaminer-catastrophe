@@ -100,14 +100,14 @@ class AI(BaseAI):
 
             for neighbor in neighbors:
 
-                unexplored = not (neighbor in self.game_data.explorer_data.visited_tiles)
+                unexplored = not ((neighbor.x, neighbor.y) in self.game_data.explorer_data.visited_tiles)
 
                 if unexplored and neighbor.is_pathable():
                     free_neighbors.append(neighbor)
 
 
             if len(free_neighbors) == 0:
-                self.game_data.explorer_data.visited_tiles = []
+                self.game_data.explorer_data.visited_tiles = set()
             else:
                 dest = free_neighbors[random.randint(0, len(free_neighbors) - 1)]
 
@@ -117,7 +117,7 @@ class AI(BaseAI):
                     print("Bush found at (" + str(dest.x) + ", " + str(dest.y) + ")")
                     self.no_income = False
 
-                self.game_data.explorer_data.visited_tiles.append((dest.x, dest.y))
+                self.game_data.explorer_data.visited_tiles.add((dest.x, dest.y))
                 self.game_data.humans[2].move(dest)
         else: # we have an income bush
             if self.game_data.humans[2].energy > 90: # if we have energy, harvest
@@ -138,11 +138,21 @@ class AI(BaseAI):
                     self.game_data.humans[2].move(next_tile)
                     self.harvester_return_path = self.harvester_return_path[1:]
                   else:
+
+
                     # if we are back, deposit the loot and rest
                     self.game_data.humans[2].drop(self.game_data.humans[2].tile, "food")
                     self.game_data.humans[2].rest()
-                    
-                    pass
+
+                    print("Player " + self.player.name + " has food of " + str(self.player.food) + " and an upkeep of " + str(self.player.upkeep))
+
+                    if self.game_data.humans[2].energy > 75:
+                        self.no_income = True
+
+
+                        self.game_data.explorer_data.visited_tiles = set()
+                        self.harvester_returning = False
+                        self.harvester_return_path = []
         return True
         # <<-- /Creer-Merge: runTurn -->>
 
