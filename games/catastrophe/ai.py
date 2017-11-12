@@ -91,6 +91,7 @@ class AI(BaseAI):
 
             print("Cat shelter is located at " + str(self.game_data.shelter_location))
             self.first_run = False
+
         else:
             for human in self.game_data.humans:
                 dest = []
@@ -103,10 +104,18 @@ class AI(BaseAI):
                     if shelter != None:
                         dest = self.find_path(human.tile, shelter)
                 elif human.job.title == "missionary":
+                    fresh_human = [t for t in human.tile.get_neighbors() if t.unit]
+                    if list(fresh_human) and human.energy >= 75.0:
+                        if not fresh_human[0].unit.owner:
+                            human.convert(fresh_human[0])
                     if human.tile.y < 9:
                         dest = self.find_path(human.tile, human.tile.tile_south)
+                        if human.tile.tile_south.unit:
+                            dest = self.find_path(human.tile, human.tile.tile_west)
                     elif human.tile.y > 8:
                         dest = self.find_path(human.tile, human.tile.tile_north)
+                        if human.tile.tile_north.unit:
+                            dest = self.find_path(human.tile, human.tile.tile_west)
                 elif human.job.title == "fresh human":
                     dest = self.find_path(human.tile, self.player.cat.tile)
                 elif human.job.title == "constructor":
@@ -117,6 +126,7 @@ class AI(BaseAI):
                 if list(dest) and len(dest) > 0:
                     if(dest[0].is_pathable()):
                         human.move(dest[0])
+
 
         if self.no_income: # we have no income bush
             neighbors = self.game_data.humans[2].tile.get_neighbors()
