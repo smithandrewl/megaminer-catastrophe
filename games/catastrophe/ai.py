@@ -98,12 +98,8 @@ class AI(BaseAI):
         free_neighbors = []
 
         for neighbor in neighbors:
-            not_a_unit_or_a_structure = (neighbor.unit is None) and (neighbor.structure is None)
-            is_a_road = (neighbor.structure != None) and (neighbor.structure.type == "road")
-            unexplored = neighbor not in self.game_data.explorer_data.visited_tiles
-            can_occupy = not_a_unit_or_a_structure or is_a_road and unexplored
-
-            if can_occupy:
+            unexplored = not(neighbor in self.game_data.explorer_data.visited_tiles)
+            if neighbor.is_pathable() and unexplored:
                 free_neighbors.append(neighbor)
 
 
