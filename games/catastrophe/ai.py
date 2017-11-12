@@ -113,7 +113,7 @@ class AI(BaseAI):
                 self.game_data.explorer_data.bushes.append((dest.x, dest.y))
                 print("Bush found at (" + str(dest.x) + ", " + str(dest.y) + ")")
 
-            self.game_data.explorer_data.visited_tiles.append((dest.x, dest.y))
+            self.game_data.explorer_data.visited_tiles.append(dest)
             self.game_data.humans[2].move(dest)
 
         return True
