@@ -39,7 +39,10 @@ class AI(BaseAI):
         self.random = random.random()
         # <<-- /Creer-Merge: start -->>
 
-        self.game_data.humans = [human.id for human in self.player.units[1:]]
+        self.game_data.humans = [human for human in self.player.units if human.job.title == 'fresh human']
+
+        self.first_run = True
+
 
 
     def game_updated(self):
@@ -47,6 +50,7 @@ class AI(BaseAI):
         """
         # <<-- Creer-Merge: game-updated -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         # replace with your game updated logic
+
 
 
         self.game_data.fuzzy_data.high_overlord_health = grade_membership(self.player.cat.energy, 50, 100)
@@ -82,7 +86,13 @@ class AI(BaseAI):
         # <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         # Put your game logic here for runTurn
 
-        neighbors = self.player.units[1].tile.get_neighbors()
+        if self.first_run:
+            self.game_data.humans[0].change_job("soldier")
+            self.game_data.humans[1].change_job("missionary")
+
+            self.first_run = False
+
+        neighbors = self.game_data.humans[2].tile.get_neighbors()
 
 
         free_neighbors = []
@@ -108,7 +118,7 @@ class AI(BaseAI):
                 print("Bush found at (" + str(dest.x) + ", " + str(dest.y) + ")")
 
             self.game_data.explorer_data.visited_tiles.append((dest.x, dest.y))
-            self.player.units[1].move(dest)
+            self.game_data.humans[2].move(dest)
 
         return True
         # <<-- /Creer-Merge: runTurn -->>
