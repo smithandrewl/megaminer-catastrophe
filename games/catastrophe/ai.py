@@ -42,8 +42,8 @@ class AI(BaseAI):
         self.game_data.humans = [human for human in self.player.units if human.job.title == 'fresh human']
 
         self.first_run = True
-
-
+        self.no_income = True
+        self.harvester_returning = False
 
     def game_updated(self):
         """ This is called every time the game's state updates, so if you are tracking anything you can update it here.
@@ -87,35 +87,72 @@ class AI(BaseAI):
             self.game_data.humans[1].change_job("missionary")
             self.game_data.humans[2].change_job("gatherer")
 
-            self.game_data.shelter_location = (self.player.cat.tile.x, self.player.cat.tile.y)
+            self.game_data.shelter_location = self.player.cat.tile
 
             print("Cat shelter is located at " + str(self.game_data.shelter_location))
             self.first_run = False
 
-        neighbors = self.game_data.humans[2].tile.get_neighbors()
+        if self.no_income: # we have no income bush
+            neighbors = self.game_data.humans[2].tile.get_neighbors()
 
 
-        free_neighbors = []
+            free_neighbors = []
 
-        for neighbor in neighbors:
-            unexplored = not(neighbor in self.game_data.explorer_data.visited_tiles)
-            if neighbor.is_pathable() and unexplored:
-                free_neighbors.append(neighbor)
+            for neighbor in neighbors:
 
+                unexplored = not ((neighbor.x, neighbor.y) in self.game_data.explorer_data.visited_tiles)
 
-        if len(free_neighbors) == 0:
-            self.game_data.explorer_data.visited_tiles = []
-        else:
-            dest = free_neighbors[random.randint(0, len(free_neighbors) - 1)]
+                if unexplored and neighbor.is_pathable():
+                    free_neighbors.append(neighbor)
 
 
-            if dest.harvest_rate != 0:
-                self.game_data.explorer_data.bushes.append((dest.x, dest.y))
-                print("Bush found at (" + str(dest.x) + ", " + str(dest.y) + ")")
+            if len(free_neighbors) == 0:
+                self.game_data.explorer_data.visited_tiles = set()
+            else:
+                dest = free_neighbors[random.randint(0, len(free_neighbors) - 1)]
 
-            self.game_data.explorer_data.visited_tiles.append(dest)
-            self.game_data.humans[2].move(dest)
 
+                if dest.harvest_rate != 0:
+                    self.game_data.explorer_data.bushes.append((dest.x, dest.y))
+                    print("Bush found at (" + str(dest.x) + ", " + str(dest.y) + ")")
+                    self.no_income = False
+
+                self.game_data.explorer_data.visited_tiles.add((dest.x, dest.y))
+                self.game_data.humans[2].move(dest)
+        else: # we have an income bush
+            if self.game_data.humans[2].energy > 90: # if we have energy, harvest
+                self.game_data.humans[2].harvest(self.game_data.humans[2].tile)
+            else:
+                # if we are weak and not returning to base
+                if not self.harvester_returning:
+
+                    # get a return path to base and mark returning
+                    self.harvester_returning = True
+
+                    self.harvester_return_path = self.find_path(self.game_data.humans[2].tile,
+                                                            self.game_data.shelter_location)
+                else:  # we are returning to base
+                  if len(self.harvester_return_path) != 0:
+                    # if we are not back, move to the next tile
+                    next_tile = self.harvester_return_path[0]
+                    self.game_data.humans[2].move(next_tile)
+                    self.harvester_return_path = self.harvester_return_path[1:]
+                  else:
+
+
+                    # if we are back, deposit the loot and rest
+                    self.game_data.humans[2].drop(self.game_data.humans[2].tile, "food")
+                    self.game_data.humans[2].rest()
+
+                    print("Player " + self.player.name + " has food of " + str(self.player.food) + " and an upkeep of " + str(self.player.upkeep))
+
+                    if self.game_data.humans[2].energy > 75:
+                        self.no_income = True
+
+
+                        self.game_data.explorer_data.visited_tiles = set()
+                        self.harvester_returning = False
+                        self.harvester_return_path = []
         return True
         # <<-- /Creer-Merge: runTurn -->>
 

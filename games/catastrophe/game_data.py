@@ -4,7 +4,7 @@ class ExplorerData:
     def __init__(self):
         self.bushes = []
         self.structures = []
-        self.visited_tiles = []
+        self.visited_tiles = set()
 
 
 

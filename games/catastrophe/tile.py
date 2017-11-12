@@ -164,7 +164,6 @@ class Tile(GameObject):
         can_occupy = unoccupied and (not_a_structure or is_a_road or is_a_shelter)
 
         return can_occupy
-        
         # <<-- /Creer-Merge: is_pathable_builtin -->>
 
     def has_neighbor(self, tile):
