@@ -84,7 +84,7 @@ class AI(BaseAI):
 
         if self.first_run:
             self.game_data.humans[0].change_job("soldier")
-            self.game_data.humans[1].change_job("missionary")
+            self.game_data.humans[1].change_job("soldier")
             self.game_data.humans[2].change_job("gatherer")
 
             self.game_data.shelter_location = self.player.cat.tile
@@ -101,9 +101,15 @@ class AI(BaseAI):
                     if list(bushes):
                         dest = self.find_path(human.tile, bushes[0])
                 elif human.job.title == "soldier":
-                    shelter = self.game_data.shelter_location
-                    if shelter != None:
+
                         dest = self.find_path(human.tile, self.player.opponent.cat.tile)
+
+
+                        print(len(dest))
+                        if len(dest) == 1:
+                            print("we are at the cat")
+                            human.attack(dest[0])
+
                 elif human.job.title == "missionary":
                     if human.tile.y < 9:
                         dest = self.find_path(human.tile, human.tile.tile_south)
@@ -116,6 +122,7 @@ class AI(BaseAI):
                                s.type == "wall" or s.type == "neutral")
                     if list(structs):
                         dest = self.find_path(human.tile, structs[0].tile)
+
                 if list(dest) and len(dest) > 0:
                     if(dest[0].is_pathable()):
                         human.move(dest[0])
