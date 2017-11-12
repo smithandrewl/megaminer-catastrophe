@@ -10,7 +10,7 @@ import random
 from games.catastrophe.fuzzy_data import *
 from games.catastrophe.fuzzy_logic import *
 from games.catastrophe.state_machine import *
-
+from games.catastrophe.game_data import *
 
 # <<-- Creer-Merge: imports -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
 # you can add additional import(s) here
@@ -34,14 +34,12 @@ class AI(BaseAI):
         """
         # <<-- Creer-Merge: start -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         # replace with your start logic
-        self.fuzzy_data = FuzzyData()
+        self.game_data = GameData()
+
         self.random = random.random()
         # <<-- /Creer-Merge: start -->>
 
-        self.visited_tiles = []
-        self.structures = []
-        self.bushes = []
-
+        self.game_data.humans = [human.id for human in self.player.units[1:]]
 
 
     def game_updated(self):
@@ -51,13 +49,15 @@ class AI(BaseAI):
         # replace with your game updated logic
 
 
-        self.fuzzy_data.high_overlord_health = grade_membership(self.player.cat.energy, 50, 100)
-        self.fuzzy_data.decent_population = grade_membership(len(self.player.units), 0, 3)
-        self.fuzzy_data.decent_resources = grade_membership(self.player.food, 30, 100)
+        self.game_data.fuzzy_data.high_overlord_health = grade_membership(self.player.cat.energy, 50, 100)
+        self.game_data.fuzzy_data.decent_population = grade_membership(len(self.player.units), 0, 3)
+        self.game_data.fuzzy_data.decent_resources = grade_membership(self.player.food, 30, 100)
 
-        protect_the_king = self.fuzzy_data.decent_population.\
-            fuzzyAnd(self.fuzzy_data.decent_resources).\
-            fuzzyAnd(self.fuzzy_data.high_overlord_health.fuzzyNot())
+        protect_the_king = self.game_data.fuzzy_data.decent_population.\
+            fuzzyAnd(self.game_data.fuzzy_data.decent_resources).\
+            fuzzyAnd(self.game_data.fuzzy_data.high_overlord_health.fuzzyNot())
+
+
 
 
 
@@ -91,20 +91,20 @@ class AI(BaseAI):
 
         free_neighbors = [
             neighbor for neighbor in neighbors
-            if (((neighbor.unit is None) and (neighbor.structure is None) or ((neighbor.structure != None) and neighbor.structure.type == "road")) and ((neighbor.x, neighbor.y) not in self.visited_tiles))]
+            if (((neighbor.unit is None) and (neighbor.structure is None) or ((neighbor.structure != None) and neighbor.structure.type == "road")) and ((neighbor.x, neighbor.y) not in self.game_data.explorer_data.visited_tiles))]
 
         if len(free_neighbors) == 0:
-            self.visited_tiles = []
+            self.game_data.explorer_data.visited_tiles = []
         else:
             dest = free_neighbors[random.randint(0, len(free_neighbors) - 1)]
 
 
             if dest.harvest_rate != 0:
-                self.bushes.append((dest.x, dest.y))
+                self.game_data.explorer_data.bushes.append((dest.x, dest.y))
 
                 print("Bush found at (" + str(dest.x) + ", " + str(dest.y) + ")")
 
-            self.visited_tiles.append((dest.x, dest.y))
+            self.game_data.explorer_data.visited_tiles.append((dest.x, dest.y))
             self.player.units[1].move(dest)
 
         return True
