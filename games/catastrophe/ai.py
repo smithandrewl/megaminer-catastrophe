@@ -87,6 +87,9 @@ class AI(BaseAI):
             self.game_data.humans[1].change_job("missionary")
             self.game_data.humans[2].change_job("gatherer")
 
+            self.game_data.shelter_location = (self.player.cat.tile.x, self.player.cat.tile.y)
+
+            print("Cat shelter is located at " + str(self.game_data.shelter_location))
             self.first_run = False
 
         neighbors = self.game_data.humans[2].tile.get_neighbors()

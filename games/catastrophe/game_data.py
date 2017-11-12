@@ -15,4 +15,3 @@ class GameData:
         self.explorer_data = ExplorerData()
         self.humans = []
         self.shelter_location = (0, 0)
-
