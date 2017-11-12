@@ -103,9 +103,9 @@ class AI(BaseAI):
                     if shelter != None:
                         dest = self.find_path(human.tile, shelter)
                 elif human.job.title == "missionary":
-                    if human.tile.y < 8:
+                    if human.tile.y < 9:
                         dest = self.find_path(human.tile, human.tile.tile_south)
-                    elif human.tile.y > 7:
+                    elif human.tile.y > 8:
                         dest = self.find_path(human.tile, human.tile.tile_north)
                 elif human.job.title == "fresh human":
                     dest = self.find_path(human.tile, self.player.cat.tile)
