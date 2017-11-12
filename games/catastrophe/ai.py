@@ -85,13 +85,17 @@ class AI(BaseAI):
         neighbors = self.player.units[1].tile.get_neighbors()
 
 
+        free_neighbors = []
 
+        for neighbor in neighbors:
+            not_a_unit_or_a_structure = (neighbor.unit is None) and (neighbor.structure is None)
+            is_a_road = (neighbor.structure != None) and (neighbor.structure.type == "road")
+            unexplored = neighbor not in self.game_data.explorer_data.visited_tiles
+            can_occupy = not_a_unit_or_a_structure or is_a_road and unexplored
 
+            if can_occupy:
+                free_neighbors.append(neighbor)
 
-
-        free_neighbors = [
-            neighbor for neighbor in neighbors
-            if (((neighbor.unit is None) and (neighbor.structure is None) or ((neighbor.structure != None) and neighbor.structure.type == "road")) and ((neighbor.x, neighbor.y) not in self.game_data.explorer_data.visited_tiles))]
 
         if len(free_neighbors) == 0:
             self.game_data.explorer_data.visited_tiles = []
@@ -101,7 +105,6 @@ class AI(BaseAI):
 
             if dest.harvest_rate != 0:
                 self.game_data.explorer_data.bushes.append((dest.x, dest.y))
-
                 print("Bush found at (" + str(dest.x) + ", " + str(dest.y) + ")")
 
             self.game_data.explorer_data.visited_tiles.append((dest.x, dest.y))
