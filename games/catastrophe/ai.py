@@ -61,10 +61,6 @@ class AI(BaseAI):
             fuzzyAnd(self.game_data.fuzzy_data.decent_resources).\
             fuzzyAnd(self.game_data.fuzzy_data.high_overlord_health.fuzzyNot())
 
-
-
-
-
         # <<-- /Creer-Merge: game-updated -->>
 
     def end(self, won, reason):
@@ -89,6 +85,7 @@ class AI(BaseAI):
         if self.first_run:
             self.game_data.humans[0].change_job("soldier")
             self.game_data.humans[1].change_job("missionary")
+            self.game_data.humans[2].change_job("gatherer")
 
             self.first_run = False
 
