@@ -93,6 +93,8 @@ class AI(BaseAI):
             self.first_run = False
         else:
 
+            path = self.find_path(self.player.cat.tile, self.player.opponent.cat.tile)
+            self.player.cat.move(path[0])
 
             for human in self.game_data.humans:
                 dest = []
