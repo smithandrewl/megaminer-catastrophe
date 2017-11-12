@@ -91,6 +91,31 @@ class AI(BaseAI):
 
             print("Cat shelter is located at " + str(self.game_data.shelter_location))
             self.first_run = False
+        else:
+            for human in self.game_data.humans:
+                dest = []
+                if human.job.title == "gatherer":
+                    bushes = self.game_data.explorer_data.bushes
+                    if list(bushes):
+                        dest = self.find_path(human.tile, bushes[0])
+                elif human.job.title == "soldier":
+                    shelter = self.game_data.shelter_location
+                    if shelter != None:
+                        dest = self.find_path(human.tile, shelter)
+                elif human.job.title == "missionary":
+                    if human.tile.y > 8:
+                        dest = self.find_path(human.tile, human.tile.tile_south)
+                    elif human.tile.y < 7:
+                        dest = self.find_path(human.tile, human.tile.tile_north)
+                elif human.job.title == "fresh human":
+                    dest = self.find_path(human.tile, self.player.cat.tile)
+                elif human.job.title == "constructor":
+                    structs = (structure for s in game_data.explorer_data.structures if
+                               s.type == "wall" or s.type == "neutral")
+                    if list(structs):
+                        dest = self.find_path(human.tile, structs[0].tile)
+                if list(dest) and len(dest) > 0:
+                    human.move(dest[0])
 
         neighbors = self.game_data.humans[2].tile.get_neighbors()
 
@@ -110,7 +135,7 @@ class AI(BaseAI):
 
 
             if dest.harvest_rate != 0:
-                self.game_data.explorer_data.bushes.append((dest.x, dest.y))
+                self.game_data.explorer_data.bushes.append((dest))
                 print("Bush found at (" + str(dest.x) + ", " + str(dest.y) + ")")
 
             self.game_data.explorer_data.visited_tiles.append((dest.x, dest.y))

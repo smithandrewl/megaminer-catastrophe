@@ -15,3 +15,15 @@ class GameData:
         self.explorer_data = ExplorerData()
         self.humans = []
         self.shelter_location = (0, 0)
+        road = []
+        x = 7
+        y = 0
+        while (y < 26):
+            road.append((x, y))
+            y += 1
+        x = 8
+        y = 0
+        while (y < 26):
+            road.append((x, y))
+            y += 1
+
