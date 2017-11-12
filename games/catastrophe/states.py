@@ -15,77 +15,72 @@ class State(Enum):
 
 def gatherer_update(state):
     if state == State.IDLE:
-        if health.low or energy.low:
+        if energy.low:
             this.state = State.FIND_SHELTER
         else:
             this.state = State.FIND_FOOD
     elif state == State.FIND_SHELTER:
-        if health.high and energy.high and not capacity.full:
+        if energy.high and not capacity.full:
             this.state = FIND_FOOD
     elif state == State.FIND_FOOD:
-        if capacity.full or health.low or energy.low:
+        if capacity.full or energy.low:
             this.state = State.FIND_SHELTER
 
 
 def constructor_update(state):
     if state == State.IDLE:
-        if health.low or energy.low:
+        if energy.low:
             this.state = State.FIND_SHELTER
         else:
             this.state = State.FIND_STRUCTURE
     elif state == State.FIND_SHELTER:
-        if health.high and energy.high and not capacity.full:
+        if energy.high and not capacity.full:
             this.state = FIND_STRUCTURE
     elif state == State.FIND_STRUCTURE:
-        if capacity.full or health.low or energy.low:
+        if capacity.full or energy.low:
             this.state = State.FIND_SHELTER
 
 
 def evangelist_update(state):
     if state == State.IDLE:
-        if health.low or energy.low:
+        if energy.low:
             this.state = State.FIND_SHELTER
         else:
             this.state = State.FIND_HUMAN
     elif state == State.FIND_SHELTER:
-        if health.high and energy.high:
+        if energy.high:
             this.state = FIND_HUMAN
     elif state == State.FIND_HUMAN:
-        if health.low or energy.low:
+        if energy.low:
             this.state = State.FIND_SHELTER
 
 
 def soldier_update(state):
     if state == State.IDLE:
-        if cat.health.low:
+        if cat.energy.low:
             this.state = State.DEFEND_CAT
-        elif health.low or energy.low:
+        elif energy.low:
             this.state = State.FIND_SHELTER
         else:
             this.state = State.ATTACK
     elif state == State.FIND_SHELTER:
-        if cat.health.low:
+        if cat.energy.low:
             this.state = State.DEFEND_CAT
-        elif health.high and energy.high:
+        elif energy.high:
             this.state = State.ATTACK
     elif state == State.ATTACK:
-        if cat.health.low:
+        if cat.energy.low:
             this.state = State.DEFEND_CAT
-        elif health.low or energy.low:
+        elif energy.low:
             this.state = State.FIND_SHELTER
     elif state == State.DEFEND_CAT:
-        if cat.health.high:
-            if health.low or energy.low:
+        if cat.energy.high:
+            if energy.low:
                 this.state = State.FIND_SHELTER
             else:
                 this.state = State.ATTACK
 
 
-def human_update(state):
-    this.state = State.FIND_CAT
-
-
-def init_state():
-    return State.IDLE
-
+def human_update(self):
+    self.state = State.FIND_CAT
 
