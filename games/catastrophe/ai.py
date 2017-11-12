@@ -92,6 +92,8 @@ class AI(BaseAI):
             print("Cat shelter is located at " + str(self.game_data.shelter_location))
             self.first_run = False
         else:
+
+
             for human in self.game_data.humans:
                 dest = []
                 if human.job.title == "gatherer":
@@ -101,7 +103,7 @@ class AI(BaseAI):
                 elif human.job.title == "soldier":
                     shelter = self.game_data.shelter_location
                     if shelter != None:
-                        dest = self.find_path(human.tile, shelter)
+                        dest = self.find_path(human.tile, self.player.opponent.cat.tile)
                 elif human.job.title == "missionary":
                     if human.tile.y < 9:
                         dest = self.find_path(human.tile, human.tile.tile_south)
