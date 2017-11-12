@@ -1,6 +1,11 @@
 # This is where you build your AI for the Catastrophe game.
 
 from joueur.base_ai import BaseAI
+from games.catastrophe.tile import *
+
+import random
+
+
 
 from games.catastrophe.fuzzy_data import *
 from games.catastrophe.fuzzy_logic import *
@@ -30,7 +35,10 @@ class AI(BaseAI):
         # <<-- Creer-Merge: start -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         # replace with your start logic
         self.fuzzy_data = FuzzyData()
+        self.random = random.random()
         # <<-- /Creer-Merge: start -->>
+
+        self.visited_tiles = []
 
     def game_updated(self):
         """ This is called every time the game's state updates, so if you are tracking anything you can update it here.
@@ -43,7 +51,13 @@ class AI(BaseAI):
         self.fuzzy_data.decent_population = grade_membership(len(self.player.units), 0, 3)
         self.fuzzy_data.decent_resources = grade_membership(self.player.food, 30, 100)
 
-        
+        protect_the_king = self.fuzzy_data.decent_population.\
+            fuzzyAnd(self.fuzzy_data.decent_resources).\
+            fuzzyAnd(self.fuzzy_data.high_overlord_health.fuzzyNot())
+
+
+
+
         # <<-- /Creer-Merge: game-updated -->>
 
     def end(self, won, reason):
@@ -64,6 +78,22 @@ class AI(BaseAI):
         """
         # <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         # Put your game logic here for runTurn
+
+        neighbors = self.player.cat.tile.get_neighbors()
+
+
+        free_neighbors = [
+            neighbor for neighbor in neighbors
+            if (((neighbor.unit is None) and (neighbor.structure is None)) and ((neighbor.x, neighbor.y) not in self.visited_tiles))]
+
+        if len(free_neighbors) == 0:
+            self.visited_tiles = []
+        else:
+            dest = free_neighbors[random.randint(0, len(free_neighbors) - 1)]
+
+            self.visited_tiles.append((dest.x, dest.y))
+            self.player.cat.move(dest)
+
         return True
         # <<-- /Creer-Merge: runTurn -->>
 
