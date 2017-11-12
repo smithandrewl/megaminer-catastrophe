@@ -39,6 +39,10 @@ class AI(BaseAI):
         # <<-- /Creer-Merge: start -->>
 
         self.visited_tiles = []
+        self.structures = []
+        self.bushes = []
+
+
 
     def game_updated(self):
         """ This is called every time the game's state updates, so if you are tracking anything you can update it here.
@@ -54,7 +58,6 @@ class AI(BaseAI):
         protect_the_king = self.fuzzy_data.decent_population.\
             fuzzyAnd(self.fuzzy_data.decent_resources).\
             fuzzyAnd(self.fuzzy_data.high_overlord_health.fuzzyNot())
-
 
 
 
@@ -79,20 +82,30 @@ class AI(BaseAI):
         # <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         # Put your game logic here for runTurn
 
-        neighbors = self.player.cat.tile.get_neighbors()
+        neighbors = self.player.units[1].tile.get_neighbors()
+
+
+
+
 
 
         free_neighbors = [
             neighbor for neighbor in neighbors
-            if (((neighbor.unit is None) and (neighbor.structure is None)) and ((neighbor.x, neighbor.y) not in self.visited_tiles))]
+            if (((neighbor.unit is None) and (neighbor.structure is None) or ((neighbor.structure != None) and neighbor.structure.type == "road")) and ((neighbor.x, neighbor.y) not in self.visited_tiles))]
 
         if len(free_neighbors) == 0:
             self.visited_tiles = []
         else:
             dest = free_neighbors[random.randint(0, len(free_neighbors) - 1)]
 
+
+            if dest.harvest_rate != 0:
+                self.bushes.append((dest.x, dest.y))
+
+                print("Bush found at (" + str(dest.x) + ", " + str(dest.y) + ")")
+
             self.visited_tiles.append((dest.x, dest.y))
-            self.player.cat.move(dest)
+            self.player.units[1].move(dest)
 
         return True
         # <<-- /Creer-Merge: runTurn -->>
