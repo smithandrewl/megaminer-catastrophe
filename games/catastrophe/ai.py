@@ -5,8 +5,6 @@ from games.catastrophe.tile import *
 
 import random
 
-
-
 from games.catastrophe.fuzzy_data import *
 from games.catastrophe.fuzzy_logic import *
 from games.catastrophe.state_machine import *
@@ -50,8 +48,6 @@ class AI(BaseAI):
         """
         # <<-- Creer-Merge: game-updated -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         # replace with your game updated logic
-
-
 
         self.game_data.fuzzy_data.high_overlord_health = grade_membership(self.player.cat.energy, 50, 100)
         self.game_data.fuzzy_data.decent_population = grade_membership(len(self.player.units), 0, 3)

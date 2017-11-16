@@ -1,5 +1,15 @@
 import math
 
+class FuzzyStateMachine:
+    def __init__(self, data, fuzzy_states):
+        self.data = data
+        self.fuzzy_states = fuzzy_states
+
+    def update(self):
+        for fuzzy_state in self.fuzzy_states:
+            fuzzy_state(self.data)
+
+
 class FuzzyValue:
     def __init__(self, value = 0.0):
         self.value = value
