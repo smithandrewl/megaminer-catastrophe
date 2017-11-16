@@ -1,14 +1,10 @@
 # This is where you build your AI for the Catastrophe game.
 
-from joueur.base_ai import BaseAI
-from games.catastrophe.tile import *
-
 import random
 
-from games.catastrophe.fuzzy_data import *
-from games.catastrophe.fuzzy_logic import *
-from games.catastrophe.state_machine import *
-from games.catastrophe.game_data import *
+from games.catastrophe.tisbutasegfault.game_data import *
+from joueur.base_ai import BaseAI
+
 
 # <<-- Creer-Merge: imports -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
 # you can add additional import(s) here

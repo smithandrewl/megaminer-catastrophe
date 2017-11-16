@@ -1,5 +1,5 @@
 
-from games.catastrophe.fuzzy_logic import *
+from games.catastrophe.tisbutasegfault.fuzzy_logic import *
 
 class FuzzyData:
     """

@@ -1,4 +1,4 @@
-from games.catastrophe.fuzzy_data import *
+from games.catastrophe.tisbutasegfault.fuzzy_data import *
 
 class ExplorerData:
     def __init__(self):
