@@ -7,6 +7,18 @@ class ExplorerData:
         self.visited_tiles = set()
 
 
+class EnemyData:
+    def __init__(self):
+        self.enemySoldierCount = 0
+        self.enemyMissionaryCount = 0
+        self.gathererCount = 0
+        self.constructorCount = 0
+
+        self.food = 0
+        self.cat_location = (0,0)
+
+        self.cat_shelters = []
+        self.missionaries = []
 
 
 class GameData:
